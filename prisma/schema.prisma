@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Building {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  address     String?
+  plotNumber  String?  // رقم القطعة
+  area        Float?   // مساحة البناء بالمتر المربع
+  projectLocation String? // موقع المشروع
+  totalFloors Int      @default(0)
+  
+  flats Flat[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("buildings")
+}
+
+model Client {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String
+  phone     String   @unique
+  cin       String?
+  address   String?
+  fullNameFr String? // French version of name
+  addressFr  String? // French version of address
+  notes     String?
+  
+  purchases Purchase[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("clients")
+}
+
+model Flat {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNum String   @unique
+  buildingId   String   @db.ObjectId
+  floorNum     Int
+  flatType     FlatType
+  status       FlatStatus
+  
+  building     Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  
+  parentFlatId String?  @db.ObjectId
+  parentFlat   Flat?    @relation("FlatSplit", fields: [parentFlatId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childFlats   Flat[]   @relation("FlatSplit")
+  
+  purchase     Purchase?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([buildingId])
+  @@index([floorNum])
+  @@index([status])
+  @@map("flats")
+}
+
+model Purchase {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  clientId    String         @db.ObjectId
+  flatId      String         @unique @db.ObjectId
+  agreedPrice Float
+  status      PurchaseStatus @default(IN_PROGRESS)
+  
+  client   Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  flat     Flat      @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  payments Payment[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([clientId])
+  @@index([status])
+  @@map("purchases")
+}
+
+model Payment {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  purchaseId String   @db.ObjectId
+  amount     Float
+  paymentDate DateTime @default(now())
+  receiptUrl String?  @db.String
+  receiptNum String   @unique
+  
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@index([purchaseId])
+  @@map("payments")
+}
+
+enum FlatType {
+  FULL
+  HALF_RIGHT
+  HALF_LEFT
+}
+
+enum FlatStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+enum PurchaseStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+// Authentication models for better-auth
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  accounts Account[]
+  sessions Session[]
+  
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("sessions")
+}
+
+model Account {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String    @db.ObjectId
+  accountId       String
+  providerId      String
+  accessToken     String?
+  refreshToken    String?
+  idToken         String?
+  expiresAt       DateTime?
+  password        String?   // For email/password auth
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+// Audit logging for tracking all user actions
+model AuditLog {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String      @db.ObjectId
+  userName    String      // Cached user name for display
+  action      AuditAction
+  entityType  String      // "client", "building", "flat", "purchase", "payment", "error", "pdf"
+  entityId    String      @db.ObjectId
+  entityName  String?     // Human-readable identifier (e.g., client name)
+  changes     Json?       // Store before/after values for updates
+  ipAddress   String?
+  userAgent   String?
+  errorMessage String?    // Error message for ERROR actions
+  errorStack   String?    // Stack trace for errors
+  pdfMetadata  Json?      // PDF metadata (receiptNum, fileSize, generationTime)
+  createdAt   DateTime    @default(now())
+  
+  @@map("audit_logs")
+  @@index([userId])
+  @@index([entityType])
+  @@index([createdAt])
+  @@index([action])
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  ERROR
+  PDF_DOWNLOAD
+  PDF_ERROR
+}

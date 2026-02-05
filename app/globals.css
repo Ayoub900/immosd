@@ -1,26 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Custom fonts */
+  --font-family-tajawal: 'Tajawal', system-ui, -apple-system, sans-serif;
+  
+  /* Custom colors */
+  --color-available: #22c55e;
+  --color-reserved: #fbbf24;
+  --color-sold: #6b7280;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  @font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
   }
 }
 
+/* RTL Setup */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-tajawal);
+  direction: rtl;
+}
+
+/* Status Badge Styles */
+@layer components {
+  .status-available {
+    @apply bg-green-100 text-green-700 border border-green-300 px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .status-reserved {
+    @apply bg-amber-100 text-amber-700 border border-amber-300 px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .status-sold {
+    @apply bg-gray-100 text-gray-700 border border-gray-300 px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  /* Flat Builder Status - Fixed: removed invalid hover:to-green-150 classes */
+  .flat-available {
+    @apply bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-400 transition-all;
+  }
+  
+  .flat-available:hover {
+    @apply from-green-100 to-green-200 border-green-500;
+  }
+  
+  .flat-reserved {
+    @apply bg-gradient-to-br from-amber-50 to-amber-100 border-2 border-amber-400 transition-all;
+  }
+  
+  .flat-reserved:hover {
+    @apply from-amber-100 to-amber-200 border-amber-500;
+  }
+  
+  .flat-sold {
+    @apply bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300 opacity-70;
+  }
 }
