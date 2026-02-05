@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, Save, Search } from 'lucide-react';
 import DashboardNav from '@/components/DashboardNav';
 
-export default function NewPurchasePage() {
+function NewPurchaseForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const preselectedClientId = searchParams.get('clientId');
@@ -243,5 +243,20 @@ export default function NewPurchasePage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function NewPurchasePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">جاري التحميل...</p>
+                </div>
+            </div>
+        }>
+            <NewPurchaseForm />
+        </Suspense>
     );
 }

@@ -73,8 +73,9 @@ export async function GET(
             agreedPrice: summary.agreedPrice,
         });
 
-        // Return PDF as download
-        return new NextResponse(pdfBuffer, {
+
+        // Return PDF as download (convert Buffer to Uint8Array for NextResponse)
+        return new NextResponse(new Uint8Array(pdfBuffer), {
             status: 200,
             headers: {
                 'Content-Type': 'application/pdf',

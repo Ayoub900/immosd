@@ -1,5 +1,5 @@
 // Test script to check building deletedAt field status
-import prisma from './lib/prisma';
+import prisma from '@/lib/prisma';
 
 async function checkBuildings() {
     console.log('Fetching all buildings including deleted...');

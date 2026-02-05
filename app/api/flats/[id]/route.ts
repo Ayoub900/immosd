@@ -4,7 +4,7 @@ import { generateFlatReference } from '@/lib/reference-generator';
 import { z } from 'zod';
 
 const updateSchema = z.object({
-    price: z.number().positive().optional(),
+    status: z.enum(['AVAILABLE', 'RESERVED', 'SOLD']).optional(),
 });
 
 // GET /api/flats/[id]
