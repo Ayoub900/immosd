@@ -1,30 +1,94 @@
-import Link from 'next/link';
-import { Building2, Users, Target, Award, ArrowLeft, CheckCircle2 } from 'lucide-react';
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import { Building2, Users, Target, Award, CheckCircle2, Menu, X } from 'lucide-react';
 
 export default function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50" dir="rtl">
       {/* Header */}
       <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
+            {/* Desktop Navigation - Hidden on mobile */}
+            <nav className="hidden md:flex gap-8 items-center">
+              <a href="#about" className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors">
+                من نحن
+              </a>
+              <a href="#services" className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors">
+                خدماتنا
+              </a>
+              <a href="#values" className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors">
+                قيمنا
+              </a>
+              <a href="#contact" className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors bg-[#1481c8]/10 px-6 py-2 rounded-lg hover:bg-[#1481c8]/20">
+                اتصل بنا
+              </a>
+            </nav>
+
+            {/* Logo and Company Name */}
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-3 rounded-lg shadow-lg">
-                <Building2 className="text-white" size={32} />
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16">
+                <Image
+                  src="/logo.png"
+                  alt="immobiliercharkaoui Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">IMMO S D CHERKAOUI</h1>
-                <p className="text-sm text-gray-600">البناء والأشغال العمومية</p>
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900">immobiliercharkaoui</h1>
+                <p className="text-xs sm:text-sm text-gray-600">البناء والأشغال العمومية</p>
               </div>
             </div>
-            <Link
-              href="/dashboard"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-700 hover:text-[#1481c8] transition-colors"
+              aria-label="Toggle menu"
             >
-              نظام الإدارة
-              <ArrowLeft size={18} />
-            </Link>
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <nav className="md:hidden mt-4 pb-4 flex flex-col gap-3">
+              <a
+                href="#about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors py-2 px-4 hover:bg-gray-50 rounded-lg"
+              >
+                من نحن
+              </a>
+              <a
+                href="#services"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors py-2 px-4 hover:bg-gray-50 rounded-lg"
+              >
+                خدماتنا
+              </a>
+              <a
+                href="#values"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors py-2 px-4 hover:bg-gray-50 rounded-lg"
+              >
+                قيمنا
+              </a>
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors bg-[#1481c8]/10 px-4 py-2 rounded-lg hover:bg-[#1481c8]/20"
+              >
+                اتصل بنا
+              </a>
+            </nav>
+          )}
         </div>
       </header>
 
@@ -36,16 +100,16 @@ export default function HomePage() {
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               شركة رائدة في البناء
               <br />
-              <span className="text-blue-600">والأشغال العمومية</span>
+              <span className="text-[#1481c8]">والأشغال العمومية</span>
             </h2>
             <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-8">
-              تتدخل شركة <strong>IMMO S D CHERKAOUI</strong> في مجال البناء والأشغال العمومية، حيث تضمن
+              تتدخل شركة <strong>IMMO S D CHERKAOUI (immobiliercharkaoui)</strong> في مجال البناء والأشغال العمومية، حيث تضمن
               إنجاز مختلف مشاريع البناء والتهيئة، مع الحرص الدائم على الجودة والصرامة وإرضاء العملاء.
             </p>
             <div className="flex gap-4 justify-center">
               <a
                 href="#about"
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl hover:scale-105"
+                className="bg-gradient-to-r from-[#1481c8] to-[#0d6db0] hover:from-[#0d6db0] hover:to-[#0a5a91] text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl hover:scale-105"
               >
                 اكتشف المزيد
               </a>
@@ -70,7 +134,7 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-12 text-white shadow-2xl">
+              <div className="bg-gradient-to-br from-[#1481c8] to-[#0a5a91] rounded-2xl p-12 text-white shadow-2xl">
                 <Building2 size={64} className="mb-6" />
                 <h3 className="text-3xl font-bold mb-4">خبرة وجودة</h3>
                 <p className="text-lg leading-relaxed">
@@ -82,8 +146,8 @@ export default function HomePage() {
 
             <div className="space-y-6">
               <div className="flex gap-4 items-start">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <CheckCircle2 className="text-blue-600" size={24} />
+                <div className="bg-[#1481c8]/10 p-3 rounded-lg">
+                  <CheckCircle2 className="text-[#1481c8]" size={24} />
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-gray-900 mb-2">الجودة</h4>
@@ -94,8 +158,8 @@ export default function HomePage() {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <CheckCircle2 className="text-blue-600" size={24} />
+                <div className="bg-[#1481c8]/10 p-3 rounded-lg">
+                  <CheckCircle2 className="text-[#1481c8]" size={24} />
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-gray-900 mb-2">الصرامة</h4>
@@ -106,8 +170,8 @@ export default function HomePage() {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <CheckCircle2 className="text-blue-600" size={24} />
+                <div className="bg-[#1481c8]/10 p-3 rounded-lg">
+                  <CheckCircle2 className="text-[#1481c8]" size={24} />
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-gray-900 mb-2">رضا العملاء</h4>
@@ -122,7 +186,7 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="services" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">خدماتنا</h2>
@@ -132,8 +196,8 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
-              <div className="bg-blue-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                <Building2 className="text-blue-600" size={32} />
+              <div className="bg-[#1481c8]/10 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+                <Building2 className="text-[#1481c8]" size={32} />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">البناء السكني</h3>
               <p className="text-gray-600 leading-relaxed">
@@ -153,7 +217,7 @@ export default function HomePage() {
 
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
               <div className="bg-green-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                <Users className="text-green-600" size={32} />
+                <CheckCircle2 className="text-green-600" size={32} />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">التهيئة والتطوير</h3>
               <p className="text-gray-600 leading-relaxed">
@@ -167,7 +231,7 @@ export default function HomePage() {
       {/* Vision Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-3xl p-12 text-white shadow-2xl">
+          <div className="bg-gradient-to-br from-[#1481c8] to-[#0a5a91] rounded-3xl p-12 text-white shadow-2xl">
             <div className="max-w-4xl mx-auto text-center">
               <Award size={64} className="mx-auto mb-6" />
               <h2 className="text-4xl font-bold mb-6">رؤيتنا المستقبلية</h2>
@@ -195,7 +259,7 @@ export default function HomePage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="values" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">قيمنا</h2>
@@ -231,7 +295,7 @@ export default function HomePage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-gradient-to-br from-blue-600 to-purple-700 text-white">
+      <section id="contact" className="py-20 bg-gradient-to-br from-[#1481c8] to-[#0a5a91] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold mb-6">هل لديك مشروع؟</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -239,8 +303,8 @@ export default function HomePage() {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a
-              href="mailto:contact@immosdcherkaoui.ma"
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+              href="mailto:immobiliercharkaoui@gmail.com"
+              className="bg-white text-[#1481c8] hover:bg-gray-100 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
             >
               📧 البريد الإلكتروني
             </a>
@@ -259,7 +323,17 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">IMMO S D CHERKAOUI</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="relative w-12 h-12">
+                  <Image
+                    src="/logo.png"
+                    alt="IMMO S D CHERKAOUI Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <h3 className="text-xl font-bold">immobiliercharkaoui</h3>
+              </div>
               <p className="text-gray-400">
                 شركة رائدة في البناء والأشغال العمومية بالمغرب
               </p>
@@ -275,14 +349,14 @@ export default function HomePage() {
             <div>
               <h3 className="text-xl font-bold mb-4">اتصل بنا</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>📧 contact@immosdcherkaoui.ma</li>
+                <li>📧 immobiliercharkaoui@gmail.com</li>
                 <li>📞 +212 XXX XXX XXX</li>
                 <li>📍 المغرب</li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} IMMO S D CHERKAOUI - جميع الحقوق محفوظة</p>
+            <p>© {new Date().getFullYear()} immobiliercharkaoui - جميع الحقوق محفوظة</p>
           </div>
         </div>
       </footer>
