@@ -9,14 +9,12 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
-        autoSignIn: true,
+        // autoSignIn: true,
     },
     session: {
-        expiresIn: 60 * 60 * 24 * 7, // 7 days
-        updateAge: 60 * 60 * 24, // 1 day (update session every day)
         cookieCache: {
             enabled: true,
-            maxAge: 5 * 60, // 5 minutes
+            maxAge: 12 * 60 * 60, // Cache session for 12 hours
         },
     },
     advanced: {
@@ -29,9 +27,4 @@ export const auth = betterAuth({
             enabled: true,
         },
     },
-    trustedOrigins: [
-        process.env.BETTER_AUTH_URL || "http://localhost:3000",
-        "https://immobiliercharkaoui.com",
-        "http://localhost:3000",
-    ],
 });
