@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -18,22 +18,21 @@ export default function LoginPage() {
         setError('');
 
         try {
-            const result = await signIn.email({
+            const { data, error } = await authClient.signIn.email({
                 email,
                 password,
-            });
-
-            // Check if login was successful
-            if (result.data && !result.error) {
-                // Use window.location for a full page reload to ensure middleware runs
-                window.location.href = '/dashboard';
-            } else if (result.error) {
-                setError(result.error.message || 'خطأ في تسجيل الدخول');
-                setLoading(false);
-            }
-        } catch (err: any) {
-            setError(err?.message || 'حدث خطأ في الاتصال');
-            setLoading(false);
+            }, {
+                onSuccess: () => {
+                    router.push("/dashboard")
+                },
+                onError: (ctx) => {
+                    setError(ctx.error.message || "Login failed")
+                }
+            })
+        } catch (err) {
+            setError("An error occurred during login")
+        } finally {
+            setLoading(false)
         }
     }
 
