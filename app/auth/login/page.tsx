@@ -18,23 +18,21 @@ export default function LoginPage() {
         setError('');
 
         try {
-            await signIn.email({
+            const result = await signIn.email({
                 email,
                 password,
-            }, {
-                onRequest: () => {
-                    setLoading(true);
-                },
-                onSuccess: () => {
-                    router.push('/dashboard');
-                },
-                onError: (ctx) => {
-                    setError(ctx.error.message || 'خطأ في تسجيل الدخول');
-                    setLoading(false);
-                },
             });
-        } catch (err) {
-            setError('حدث خطأ في الاتصال');
+
+            // Check if login was successful
+            if (result.data && !result.error) {
+                // Use window.location for a full page reload to ensure middleware runs
+                window.location.href = '/dashboard';
+            } else if (result.error) {
+                setError(result.error.message || 'خطأ في تسجيل الدخول');
+                setLoading(false);
+            }
+        } catch (err: any) {
+            setError(err?.message || 'حدث خطأ في الاتصال');
             setLoading(false);
         }
     }
