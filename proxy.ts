@@ -12,7 +12,8 @@ export default function proxy(request: NextRequest) {
     // Only protect /dashboard routes
     if (pathname.startsWith('/dashboard')) {
         // Check for better-auth session cookie
-        const sessionToken = request.cookies.get('better-auth.session_token');
+        const sessionToken = request.cookies.get("better-auth.session_token")?.value ||
+            request.cookies.get("__Secure-better-auth.session_token")?.value
 
         if (!sessionToken) {
             // Redirect to login if no session
