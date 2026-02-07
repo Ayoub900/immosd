@@ -133,6 +133,7 @@ export async function POST(request: Request) {
                 flat: {
                     select: {
                         referenceNum: true,
+                        propertyType: true,
                         building: {
                             select: {
                                 name: true,
@@ -179,6 +180,7 @@ export async function POST(request: Request) {
             clientCin: purchase.client.cin || undefined,
             clientAddress: purchase.client.address || undefined,
             flatReference: purchase.flat.referenceNum,
+            propertyType: purchase.flat.propertyType || 'APARTMENT',
             buildingName: purchase.flat.building.name,
             buildingAddress: purchase.flat.building.address || undefined,
             buildingPlotNumber: purchase.flat.building.plotNumber || undefined,
