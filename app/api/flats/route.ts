@@ -7,6 +7,7 @@ const flatSchema = z.object({
     buildingId: z.string().min(1, 'معرف المبنى مطلوب'),
     floorNum: z.number().int().positive(),
     flatType: z.enum(['FULL', 'HALF_RIGHT', 'HALF_LEFT']).optional().default('FULL'),
+    propertyType: z.enum(['APARTMENT', 'COMMERCIAL_STORE']).optional().default('APARTMENT'),
     status: z.enum(['AVAILABLE', 'RESERVED', 'SOLD']).optional().default('AVAILABLE'),
 });
 

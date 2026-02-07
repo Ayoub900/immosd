@@ -153,7 +153,7 @@ export default function PaymentsPage() {
                 <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
                     <div className="space-y-4">
                         {/* Search Bar */}
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-3">
                             <div className="flex-1 relative">
                                 <Search className="absolute right-3 top-2.5 text-gray-400" size={20} />
                                 <input
@@ -165,19 +165,21 @@ export default function PaymentsPage() {
                                     className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
-                            <button
-                                onClick={() => setShowFilters(!showFilters)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                            >
-                                {showFilters ? 'إخفاء الفلاتر' : 'إظهار الفلاتر'}
-                            </button>
-                            <button
-                                onClick={handleSearch}
-                                disabled={searching}
-                                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg"
-                            >
-                                {searching ? '...' : 'بحث'}
-                            </button>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowFilters(!showFilters)}
+                                    className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                                >
+                                    {showFilters ? 'إخفاء الفلاتر' : 'إظهار الفلاتر'}
+                                </button>
+                                <button
+                                    onClick={handleSearch}
+                                    disabled={searching}
+                                    className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg"
+                                >
+                                    {searching ? '...' : 'بحث'}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Advanced Filters */}
@@ -234,8 +236,8 @@ export default function PaymentsPage() {
                     </div>
                 </div>
 
-                {/* Payments Table */}
-                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                {/* Payments Table - Desktop */}
+                <div className="hidden md:block bg-white rounded-lg shadow-sm overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
@@ -318,6 +320,67 @@ export default function PaymentsPage() {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Payments Cards - Mobile */}
+                <div className="md:hidden space-y-4">
+                    {payments.length === 0 ? (
+                        <div className="bg-white rounded-lg shadow-sm p-8 text-center text-gray-500">
+                            {searchTerm || dateFrom || dateTo || amountMin || amountMax ? 'لا توجد نتائج للبحث' : 'لا توجد دفعات بعد'}
+                        </div>
+                    ) : (
+                        payments.map((payment) => (
+                            <div key={payment.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                                <div className="flex items-start justify-between mb-3">
+                                    <div>
+                                        <div className="text-sm font-medium text-gray-500">رقم الإيصال</div>
+                                        <div className="text-lg font-bold text-gray-900">{payment.receiptNum}</div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-sm text-gray-500">المبلغ</div>
+                                        <div className="text-lg font-bold text-blue-600">
+                                            {payment.amount.toLocaleString('ar-MA')} د.م
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2 mb-3">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-500">العميل:</span>
+                                        <span className="font-medium text-gray-900">{payment.purchase.client.fullName}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-500">الشقة:</span>
+                                        <span className="font-medium text-gray-900">{payment.purchase.flat.referenceNum}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-500">التاريخ:</span>
+                                        <span className="font-medium text-gray-900">
+                                            {new Date(payment.paymentDate).toLocaleDateString('ar-MA')}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => downloadReceipt(payment.id, payment.receiptNum)}
+                                    disabled={downloading === payment.id}
+                                    className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+                                >
+                                    {downloading === payment.id ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                            جاري التحميل...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={20} />
+                                            تحميل الإيصال
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        ))
+                    )}
                 </div>
 
                 {/* Pagination */}

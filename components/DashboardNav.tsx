@@ -6,7 +6,7 @@ import { Home, Users, Building2, LayoutGrid, ShoppingCart, Wallet, LogOut } from
 import { signOut } from '@/lib/auth-client';
 
 interface DashboardNavProps {
-    currentPage?: 'dashboard' | 'clients' | 'buildings' | 'flats' | 'purchases' | 'payments';
+    currentPage?: 'dashboard' | 'clients' | 'buildings' | 'purchases' | 'payments';
 }
 
 export default function DashboardNav({ currentPage }: DashboardNavProps) {
@@ -19,7 +19,6 @@ export default function DashboardNav({ currentPage }: DashboardNavProps) {
         if (pathname === '/dashboard') return 'dashboard';
         if (pathname.includes('/clients')) return 'clients';
         if (pathname.includes('/buildings')) return 'buildings';
-        if (pathname.includes('/flats')) return 'flats';
         if (pathname.includes('/purchases')) return 'purchases';
         if (pathname.includes('/payments')) return 'payments';
         return 'dashboard';
@@ -31,7 +30,6 @@ export default function DashboardNav({ currentPage }: DashboardNavProps) {
         { id: 'dashboard', href: '/dashboard', icon: Home, label: 'الرئيسية' },
         { id: 'clients', href: '/dashboard/clients', icon: Users, label: 'العملاء' },
         { id: 'buildings', href: '/dashboard/buildings', icon: Building2, label: 'المباني' },
-        { id: 'flats', href: '/dashboard/flats', icon: LayoutGrid, label: 'الشقق' },
         { id: 'purchases', href: '/dashboard/purchases', icon: ShoppingCart, label: 'المبيعات' },
         { id: 'payments', href: '/dashboard/payments', icon: Wallet, label: 'الدفعات' },
     ];

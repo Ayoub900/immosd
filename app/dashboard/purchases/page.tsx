@@ -189,10 +189,9 @@ export default function PurchasesPage() {
                                 const percentage = summary ? (summary.totalPaid / summary.agreedPrice) * 100 : 0;
 
                                 return (
-                                    <Link
+                                    <div
                                         key={purchase.id}
-                                        href={`/dashboard/purchases/${purchase.id}`}
-                                        className="block bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                                        className="block bg-white rounded-xl p-6 shadow-sm border border-gray-200"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-start gap-4 flex-1">
@@ -252,7 +251,7 @@ export default function PurchasesPage() {
                                                 )}
                                             </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 );
                             })}
                         </div>

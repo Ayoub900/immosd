@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 const updateSchema = z.object({
     status: z.enum(['AVAILABLE', 'RESERVED', 'SOLD']).optional(),
+    propertyType: z.enum(['APARTMENT', 'COMMERCIAL_STORE']).optional(),
 });
 
 // GET /api/flats/[id]

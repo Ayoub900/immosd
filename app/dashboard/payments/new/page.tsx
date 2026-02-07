@@ -17,6 +17,12 @@ interface Purchase {
     flat: {
         id: string;
         referenceNum: string;
+        floorNum: number;
+        propertyType: 'APARTMENT' | 'COMMERCIAL_STORE';
+    };
+    paymentSummary?: {
+        totalPaid: number;
+        remaining: number;
     };
 }
 
@@ -38,7 +44,7 @@ export default function NewPaymentPage() {
 
     async function fetchPurchases() {
         try {
-            const res = await fetch('/api/purchases');
+            const res = await fetch('/api/purchases?includeSummary=true');
             if (!res.ok) throw new Error();
             const data = await res.json();
             // Only show in-progress purchases
@@ -189,8 +195,16 @@ export default function NewPaymentPage() {
                                 <h3 className="font-bold text-blue-900 mb-2">تفاصيل الشراء</h3>
                                 <div className="text-sm text-blue-800 space-y-1">
                                     <p><strong>العميل:</strong> {selectedPurchase.client.fullName}</p>
-                                    <p><strong>الشقة:</strong> {selectedPurchase.flat.referenceNum}</p>
+                                    <p><strong>رقم المرجع:</strong> {selectedPurchase.flat.referenceNum}</p>
+                                    <p><strong>الطابق:</strong> {selectedPurchase.flat.floorNum === 1 ? 'الطابق الأرضي' : `الطابق ${selectedPurchase.flat.floorNum - 1}`}</p>
+                                    <p><strong>النوع:</strong> {selectedPurchase.flat.propertyType === 'COMMERCIAL_STORE' ? 'محل تجاري' : 'شقة'}</p>
                                     <p><strong>السعر المتفق عليه:</strong> {selectedPurchase.agreedPrice.toLocaleString('ar-MA')} د.م</p>
+                                    {selectedPurchase.paymentSummary && (
+                                        <>
+                                            <p><strong>المبلغ المدفوع:</strong> <span className="text-green-700">{selectedPurchase.paymentSummary.totalPaid.toLocaleString('ar-MA')} د.م</span></p>
+                                            <p><strong>المتبقي:</strong> <span className="text-orange-700 font-bold">{selectedPurchase.paymentSummary.remaining.toLocaleString('ar-MA')} د.م</span></p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         )}

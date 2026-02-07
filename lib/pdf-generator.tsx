@@ -4,9 +4,10 @@
  */
 
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import { renderToStream } from '@react-pdf/renderer';
 import path from 'path';
+import fs from 'fs';
 // @ts-ignore - fontkit doesn't have types
 import fontkit from '@react-pdf/fontkit';
 
@@ -19,6 +20,7 @@ export interface ReceiptData {
     clientCin?: string;
     clientAddress?: string;
     flatReference: string;
+    propertyType: 'APARTMENT' | 'COMMERCIAL_STORE'; // Property type
     buildingName?: string;
     buildingAddress?: string;
     buildingPlotNumber?: string;
@@ -43,7 +45,17 @@ function parseFlatReference(ref: string): { floor: string; flat: string } {
 }
 
 // Convert floor number to Arabic ordinal
+// Floor 1 = Ground floor (الطابق الأرضي)
+// Floor 2 = First floor (الطابق الأول), etc.
 function floorToArabic(num: string): string {
+    const floorNum = parseInt(num);
+
+    // Floor 1 is ground floor
+    if (floorNum === 1) {
+        return 'الأرضي';
+    }
+
+    // All other floors are shifted down by 1
     const ordinals: { [key: string]: string } = {
         '1': 'الأول',
         '2': 'الثاني',
@@ -56,8 +68,16 @@ function floorToArabic(num: string): string {
         '9': 'التاسع',
         '10': 'العاشر',
     };
-    return ordinals[num] || `الطابق ${num}`;
+
+    const adjustedFloor = (floorNum - 1).toString();
+    return ordinals[adjustedFloor] || `الطابق ${adjustedFloor}`;
 }
+
+// Convert property type to Arabic
+function propertyTypeToArabic(type: 'APARTMENT' | 'COMMERCIAL_STORE'): string {
+    return type === 'APARTMENT' ? 'شقة' : 'محل تجاري';
+}
+
 
 
 // Register fontkit to enable custom font loading
@@ -79,41 +99,16 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#1e40af',
+        backgroundColor: '#ffffff',
         padding: 20,
         paddingHorizontal: 35,
-    },
-    logoContainer: {
-        width: 60,
-        height: 60,
-        backgroundColor: '#ffffff',
-        borderRadius: 30,
-        padding: 6,
+        borderBottom: '1px solid #e2e8f0',
     },
     logo: {
-        width: '100%',
-        height: '100%',
+        height: 50,
         objectFit: 'contain',
-    },
-    headerText: {
-        flex: 1,
-        textAlign: 'center',
-    },
-    companyName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: '#ffffff',
-        marginBottom: 4,
-        direction: 'rtl',
-    },
-    headerSubtitle: {
-        fontSize: 10,
-        textAlign: 'center',
-        color: '#dbeafe',
-        direction: 'rtl',
     },
     content: {
         flex: 1,
@@ -122,10 +117,10 @@ const styles = StyleSheet.create({
         fontWeight: 700,
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'center',
         marginBottom: 18,
-        fontWeight: 'bold',
+        fontWeight: 'ultrabold',
         color: '#1e40af',
         textDecoration: 'underline',
     },
@@ -189,18 +184,18 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => {
     const floorArabic = floorToArabic(floor);
     const currentDate = new Date().toLocaleDateString('ar-MA', { year: 'numeric', month: 'long', day: 'numeric' });
 
+    // Load logo as base64 data URI for better PDF compatibility
+    const logoPath = path.resolve(process.cwd(), 'public/logo_wide.png');
+    const logoBuffer = fs.readFileSync(logoPath);
+    const logoBase64 = logoBuffer.toString('base64');
+    const logoSrc = `data:image/png;base64,${logoBase64}`;
+
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 {/* Header */}
                 <View style={styles.header}>
-
-                    {/* Company Name & Slogan */}
-                    <View style={styles.headerText}>
-                        <Text style={styles.companyName}>IMMO S D CHERKAOUI</Text>
-                        <Text style={styles.headerSubtitle}>بنسليمان - البناء والأشغال العمومية</Text>
-                    </View>
-
+                    <Image src={logoSrc} style={styles.logo} />
                 </View>
 
                 {/* Content */}
@@ -218,22 +213,27 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => {
                     <Text style={styles.rtlText}>{SELLER.name} {SELLER.cin} و الساكن في شمس المدينة الرقم 1288 الطابق الأول ببنسليمان.</Text>
 
                     {/* Acknowledgment */}
-                    <Text style={styles.rtlText}>اشهد و اصرح بكامل ادراكي و تمييزي و تحت جميع الضمانات القضائية و القانونية الجاري بها العمل التي توصلت من</Text>
+                    <Text style={styles.rtlText}>اشهد و اصرح بكامل ادراكي و تمييزي و تحت جميع الضمانات القضائية و القانونية الجاري بها العمل أنني توصلت من</Text>
 
                     {/* Buyer information */}
-                    <Text style={styles.rtlText}>{SELLER.company} رقم {SELLER.companyId} المزداد بسوق السبت أو لاد نمة المقيم بن صالح و الساكن بحي الهدى سوق السبت أولاد النمة.</Text>
+                    <Text style={styles.rtlText}>
+                        السيد {data.clientName} {data.clientCin ? `الحامل لبطاقة التعريف الوطنية رقم ${data.clientCin}` : ''}{data.clientAddress ? ` و الساكن في ${data.clientAddress}` : ''}.
+                    </Text>
 
                     {/* Amount */}
-                    <Text style={styles.amount}>
-                        بمبلغ قدره {data.paymentAmount.toLocaleString('fr-FR')} درهم
-                    </Text>
+                    <View style={styles.amount}>
+                        <Text style={{ textAlign: 'center', direction: 'rtl' }}>بمبلغ قدره</Text>
+                        <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'ultrabold', marginTop: 4, direction: 'ltr' }}>
+                            درهم {data.paymentAmount.toLocaleString('ar-MA')}
+                        </Text>
+                    </View>
 
                     {/* Payment purpose */}
                     <Text style={styles.rtlText}>كدفعة من مجموع المبلغ المتفق عليه في الأرض و البناء</Text>
 
                     {/* Property details */}
                     <Text style={styles.rtlText}>
-                        {data.agreedPrice.toLocaleString('ar-MA')} درهم من اجل بناء شقة بالطابق {floorArabic} بالبقعة الأرضية الحاملة لرقم {data.buildingPlotNumber || '................'} دات المساحة {data.buildingArea || '.......................'} متر مربع و المتواجدة في {data.projectLocation || '......................................'}.
+                        {data.agreedPrice.toLocaleString('ar-MA')} درهم من اجل بناء {propertyTypeToArabic(data.propertyType)} بالطابق {floorArabic} بالبقعة الأرضية الحاملة لرقم {data.buildingPlotNumber || '................'} دات المساحة {data.buildingArea || '.......................'} متر مربع و المتواجدة في {data.projectLocation || '......................................'}.
                     </Text>
 
                     {/* Shared fees clause */}
@@ -244,6 +244,13 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => {
                         .وبه احرر هذا الاشهاد وامضي عليه تحت كامل مسؤوليتي
                     </Text>
 
+                    {/* Note */}
+                    <View style={{ backgroundColor: '#dbeafe', padding: 10, borderRadius: 6, marginTop: 15, marginBottom: 15 }}>
+                        <Text style={{ textAlign: 'right', direction: 'rtl', color: '#1e40af', fontSize: 12, fontWeight: 'bold' }}>
+                            ملاحظة؛ واجب الموثق والأوراق والأجزاء المشتركة خارج الثمن المثفق عليه في الأرض و البناء.
+                        </Text>
+                    </View>
+
                     {/* Signature */}
                     <Text style={styles.signature}>وحرر بتاريخ: </Text>
                 </View>
@@ -251,8 +258,8 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => {
                 {/* Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>تم إصدار هذا الإيصال تلقائياً من نظام إمو إسدي</Text>
-                    <Text style={styles.footerText}>للاستفسارات: info@immosd.ma | +212 5XX-XXXXXX</Text>
-                    <Text style={styles.footerText}>www.immosd.ma</Text>
+                    <Text style={styles.footerText}>immobiliercharkaoui@gmai.com | +212 661-482166 :للاستفسارات</Text>
+                    <Text style={styles.footerText}>immobiliercharkaoui.com</Text>
                 </View>
             </Page>
         </Document>

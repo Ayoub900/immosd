@@ -12,8 +12,25 @@ export default function HomePage() {
       {/* Header */}
       <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            {/* Desktop Navigation - Hidden on mobile */}
+          <div className="flex justify-between md:justify-between items-center relative">
+            {/* Logo and Company Name - Centered on mobile, left on desktop */}
+            <div className="flex items-center gap-3 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16">
+                <Image
+                  src="/logo.png"
+                  alt="immobiliercharkaoui Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <div className="text-center md:text-right">
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900">immobiliercharkaoui</h1>
+                <p className="text-xs sm:text-sm text-gray-600">البناء والأشغال العمومية</p>
+              </div>
+            </div>
+
+            {/* Desktop Navigation - Now on the RIGHT - Hidden on mobile */}
             <nav className="hidden md:flex gap-8 items-center">
               <a href="#about" className="text-gray-700 hover:text-[#1481c8] font-medium transition-colors">
                 من نحن
@@ -28,23 +45,6 @@ export default function HomePage() {
                 اتصل بنا
               </a>
             </nav>
-
-            {/* Logo and Company Name */}
-            <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16">
-                <Image
-                  src="/logo.png"
-                  alt="immobiliercharkaoui Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              <div>
-                <h1 className="text-lg sm:text-2xl font-bold text-gray-900">immobiliercharkaoui</h1>
-                <p className="text-xs sm:text-sm text-gray-600">البناء والأشغال العمومية</p>
-              </div>
-            </div>
 
             {/* Mobile Menu Button */}
             <button
@@ -93,16 +93,21 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <section className="relative overflow-hidden min-h-[600px] flex items-center">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image src="/hero-bg.jpg" alt="" fill className="object-cover" />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-blue-900/60"></div>
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 z-10">
           <div className="text-center">
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
               شركة رائدة في البناء
               <br />
-              <span className="text-[#1481c8]">والأشغال العمومية</span>
+              <span className="text-[#1481c8] drop-shadow-xl">والأشغال العمومية</span>
             </h2>
-            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-8">
+            <p className="text-xl text-white/95 max-w-4xl mx-auto leading-relaxed mb-8 drop-shadow-md">
               تتدخل شركة <strong>IMMO S D CHERKAOUI (immobiliercharkaoui)</strong> في مجال البناء والأشغال العمومية، حيث تضمن
               إنجاز مختلف مشاريع البناء والتهيئة، مع الحرص الدائم على الجودة والصرامة وإرضاء العملاء.
             </p>

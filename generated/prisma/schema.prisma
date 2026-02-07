@@ -46,11 +46,12 @@ model Client {
 }
 
 model Flat {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  referenceNum String     @unique
-  buildingId   String     @db.ObjectId
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNum String       @unique
+  buildingId   String       @db.ObjectId
   floorNum     Int
   flatType     FlatType
+  propertyType PropertyType @default(APARTMENT)
   status       FlatStatus
 
   building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
@@ -124,6 +125,11 @@ enum FlatStatus {
 enum PurchaseStatus {
   IN_PROGRESS
   COMPLETED
+}
+
+enum PropertyType {
+  APARTMENT
+  COMMERCIAL_STORE
 }
 
 // Authentication models for better-auth

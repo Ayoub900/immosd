@@ -147,6 +147,7 @@ exports.Prisma.FlatScalarFieldEnum = {
   buildingId: 'buildingId',
   floorNum: 'floorNum',
   flatType: 'flatType',
+  propertyType: 'propertyType',
   status: 'status',
   parentFlatId: 'parentFlatId',
   createdAt: 'createdAt',
@@ -242,6 +243,11 @@ exports.FlatType = exports.$Enums.FlatType = {
   FULL: 'FULL',
   HALF_RIGHT: 'HALF_RIGHT',
   HALF_LEFT: 'HALF_LEFT'
+};
+
+exports.PropertyType = exports.$Enums.PropertyType = {
+  APARTMENT: 'APARTMENT',
+  COMMERCIAL_STORE: 'COMMERCIAL_STORE'
 };
 
 exports.FlatStatus = exports.$Enums.FlatStatus = {

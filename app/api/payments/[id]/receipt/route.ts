@@ -26,6 +26,7 @@ export async function GET(
                         flat: {
                             select: {
                                 referenceNum: true,
+                                propertyType: true,
                                 building: {
                                     select: {
                                         name: true,
@@ -61,6 +62,7 @@ export async function GET(
             clientCin: payment.purchase.client.cin || undefined,
             clientAddress: payment.purchase.client.address || undefined,
             flatReference: payment.purchase.flat.referenceNum,
+            propertyType: payment.purchase.flat.propertyType || 'APARTMENT',
             buildingName: payment.purchase.flat.building.name,
             buildingAddress: payment.purchase.flat.building.address || undefined,
             buildingPlotNumber: payment.purchase.flat.building.plotNumber || undefined,
