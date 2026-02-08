@@ -78,12 +78,10 @@ function propertyTypeToArabic(type: 'APARTMENT' | 'COMMERCIAL_STORE'): string {
     return type === 'APARTMENT' ? 'شقة' : 'محل تجاري';
 }
 
-
-
 // Register fontkit to enable custom font loading
 Font.registerHyphenationCallback((word) => [word]);
 
-// Register local Arabic font - Tajawal with absolute path
+// Register Tajawal font with spacing workaround for Arabic rendering
 Font.register({
     family: 'Tajawal',
     src: path.resolve(process.cwd(), 'public/fonts/Tajawal-Regular.ttf'),
@@ -237,17 +235,17 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => {
                     </Text>
 
                     {/* Shared fees clause */}
-                    <Text style={styles.rtlText}>خارجة الأجزاء المشتركة وواجب الموثق والأوراق المتعلقة .......باستخلاص رخصة البناء</Text>
+                    <Text style={styles.rtlText}>خارجة الأجزاء المشتركة و واجب الموثق و الأوراق المتعلقة .......باستخلاص رخصة البناء</Text>
 
                     {/* Declaration */}
                     <Text style={styles.rtlText}>
-                        .وبه احرر هذا الاشهاد وامضي عليه تحت كامل مسؤوليتي
+                        .وبه احرر هذا الاشهاد و امضي عليه تحت كامل مسؤوليتي
                     </Text>
 
                     {/* Note */}
                     <View style={{ backgroundColor: '#dbeafe', padding: 10, borderRadius: 6, marginTop: 15, marginBottom: 15 }}>
                         <Text style={{ textAlign: 'right', direction: 'rtl', color: '#1e40af', fontSize: 12, fontWeight: 'bold' }}>
-                            ملاحظة؛ واجب الموثق والأوراق والأجزاء المشتركة خارج الثمن المثفق عليه في الأرض و البناء.
+                            ملاحظة: واجب الموثق و الأوراق و الأجزاء المشتركة خارج الثمن المتفق عليه في الأرض و البناء.
                         </Text>
                     </View>
 
@@ -258,7 +256,7 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => {
                 {/* Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>تم إصدار هذا الإيصال تلقائياً من نظام إمو إسدي</Text>
-                    <Text style={styles.footerText}>immobiliercharkaoui@gmai.com | +212 661-482166 :للاستفسارات</Text>
+                    <Text style={styles.footerText}>immobiliercharkaoui@gmail.com | +212 661-482166 :للاستفسارات</Text>
                     <Text style={styles.footerText}>immobiliercharkaoui.com</Text>
                 </View>
             </Page>

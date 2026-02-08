@@ -59,7 +59,7 @@ export async function GET(request: Request) {
                     },
                 },
             },
-            orderBy: { paymentDate: 'desc' },
+            orderBy: { createdAt: 'desc' },
         });
 
         // Filter by client name or flat reference in memory (for search functionality)

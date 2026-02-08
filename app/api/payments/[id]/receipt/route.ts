@@ -54,9 +54,9 @@ export async function GET(
         }
 
 
-        // Generate PDF using React-PDF
-        const { generatePaymentReceiptBuffer } = await import('@/lib/pdf-generator');
-        const pdfBuffer = await generatePaymentReceiptBuffer({
+        // Generate PDF using Puppeteer (HTML-to-PDF with perfect Arabic support)
+        const { generatePaymentReceiptPuppeteer } = await import('@/lib/pdf-generator-puppeteer');
+        const pdfBuffer = await generatePaymentReceiptPuppeteer({
             receiptNum: payment.receiptNum,
             clientName: payment.purchase.client.fullName,
             clientCin: payment.purchase.client.cin || undefined,
