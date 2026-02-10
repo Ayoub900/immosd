@@ -178,6 +178,20 @@ exports.Prisma.PaymentScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.ExpenseScalarFieldEnum = {
+  id: 'id',
+  description: 'description',
+  amount: 'amount',
+  category: 'category',
+  expenseDate: 'expenseDate',
+  notes: 'notes',
+  buildingId: 'buildingId',
+  flatId: 'flatId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -261,6 +275,15 @@ exports.PurchaseStatus = exports.$Enums.PurchaseStatus = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.ExpenseCategory = exports.$Enums.ExpenseCategory = {
+  MAINTENANCE: 'MAINTENANCE',
+  UTILITIES: 'UTILITIES',
+  SALARIES: 'SALARIES',
+  MARKETING: 'MARKETING',
+  LEGAL: 'LEGAL',
+  OTHER: 'OTHER'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   CREATE: 'CREATE',
   UPDATE: 'UPDATE',
@@ -278,6 +301,7 @@ exports.Prisma.ModelName = {
   Flat: 'Flat',
   Purchase: 'Purchase',
   Payment: 'Payment',
+  Expense: 'Expense',
   User: 'User',
   Session: 'Session',
   Account: 'Account',

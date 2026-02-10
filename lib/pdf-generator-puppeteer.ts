@@ -196,7 +196,7 @@ export async function generatePaymentReceiptPuppeteer(data: ReceiptData): Promis
         
         <div class="footer">
             <div class="footer-text">تم إصدار هذا الإيصال تلقائياً من نظام إمو إسدي</div>
-            <div class="footer-text">للاستفسارات: +212 661-482166 | immobiliercharkaoui@gmail.com</div>
+            <div class="footer-text">immobiliercharkaoui@gmail.com | +212 661-482166 :للاستفسارات</div>
             <div class="footer-text">immobiliercharkaoui.com</div>
         </div>
     </div>

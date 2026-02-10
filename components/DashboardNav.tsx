@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Users, Building2, LayoutGrid, ShoppingCart, Wallet, LogOut } from 'lucide-react';
+import { Home, Users, Building2, LayoutGrid, ShoppingCart, Wallet, Receipt, LogOut } from 'lucide-react';
 import { signOut } from '@/lib/auth-client';
 
 interface DashboardNavProps {
-    currentPage?: 'dashboard' | 'clients' | 'buildings' | 'purchases' | 'payments';
+    currentPage?: 'dashboard' | 'clients' | 'buildings' | 'purchases' | 'payments' | 'expenses';
 }
 
 export default function DashboardNav({ currentPage }: DashboardNavProps) {
@@ -21,6 +21,7 @@ export default function DashboardNav({ currentPage }: DashboardNavProps) {
         if (pathname.includes('/buildings')) return 'buildings';
         if (pathname.includes('/purchases')) return 'purchases';
         if (pathname.includes('/payments')) return 'payments';
+        if (pathname.includes('/expenses')) return 'expenses';
         return 'dashboard';
     };
 
@@ -32,6 +33,7 @@ export default function DashboardNav({ currentPage }: DashboardNavProps) {
         { id: 'buildings', href: '/dashboard/buildings', icon: Building2, label: 'المباني' },
         { id: 'purchases', href: '/dashboard/purchases', icon: ShoppingCart, label: 'المبيعات' },
         { id: 'payments', href: '/dashboard/payments', icon: Wallet, label: 'الدفعات' },
+        { id: 'expenses', href: '/dashboard/expenses', icon: Receipt, label: 'المصروفات' },
     ];
 
     async function handleLogout() {

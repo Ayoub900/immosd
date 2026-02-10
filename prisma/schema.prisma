@@ -18,6 +18,7 @@ model Building {
   totalFloors Int      @default(0)
   
   flats Flat[]
+  expenses Expense[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,6 +62,7 @@ model Flat {
   childFlats   Flat[]   @relation("FlatSplit")
   
   purchase     Purchase?
+  expenses     Expense[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -130,6 +132,41 @@ enum PurchaseStatus {
 enum PropertyType {
   APARTMENT
   COMMERCIAL_STORE
+}
+
+model Expense {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  amount      Float
+  category    ExpenseCategory
+  expenseDate DateTime        @default(now())
+  notes       String?
+  
+  // Optional associations
+  buildingId  String?         @db.ObjectId
+  flatId      String?         @db.ObjectId
+  
+  building    Building?       @relation(fields: [buildingId], references: [id], onDelete: SetNull)
+  flat        Flat?           @relation(fields: [flatId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deletedAt   DateTime?
+  
+  @@index([buildingId])
+  @@index([flatId])
+  @@index([category])
+  @@index([expenseDate])
+  @@map("expenses")
+}
+
+enum ExpenseCategory {
+  MAINTENANCE
+  UTILITIES
+  SALARIES
+  MARKETING
+  LEGAL
+  OTHER
 }
 
 // Authentication models for better-auth
