@@ -161,7 +161,7 @@ export default function ExpensesPage() {
                                 <Search className="absolute right-3 top-2.5 text-gray-400" size={20} />
                                 <input
                                     type="text"
-                                    placeholder="بحث بالوصف أو المبنى"
+                                    placeholder="بحث بالوصف"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -266,9 +266,9 @@ export default function ExpensesPage() {
                                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     الفئة
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {/* <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     المبنى
-                                </th>
+                                </th> */}
                                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     المبلغ
                                 </th>
@@ -302,11 +302,11 @@ export default function ExpensesPage() {
                                                 {categoryLabels[expense.category]}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        {/* <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm text-gray-500">
                                                 {expense.building?.name || '-'}
                                             </div>
-                                        </td>
+                                        </td> */}
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-bold text-red-600">
                                                 {expense.amount.toLocaleString('ar-MA')} د.م

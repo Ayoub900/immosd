@@ -178,7 +178,7 @@ export default function NewExpensePage() {
                     </div>
 
                     {/* Building and Flat (Optional) */}
-                    <div className="border-t border-gray-200 pt-6">
+                    {/* <div className="border-t border-gray-200 pt-6">
                         <h3 className="text-lg font-medium text-gray-900 mb-4">ربط بعقار (اختياري)</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -199,7 +199,7 @@ export default function NewExpensePage() {
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Notes */}
                     <div>
