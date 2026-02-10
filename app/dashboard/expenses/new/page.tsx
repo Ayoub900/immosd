@@ -202,7 +202,7 @@ export default function NewExpensePage() {
                     </div> */}
 
                     {/* Notes */}
-                    <div>
+                    {/* <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             ملاحظات
                         </label>
@@ -213,7 +213,7 @@ export default function NewExpensePage() {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="ملاحظات إضافية..."
                         />
-                    </div>
+                    </div> */}
 
                     {/* Submit Buttons */}
                     <div className="flex gap-4 pt-6 border-t border-gray-200">
