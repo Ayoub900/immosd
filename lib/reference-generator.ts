@@ -9,58 +9,29 @@ import prisma from './prisma';
 export async function generateFlatReference(
     buildingId: string,
     floorNum: number,
-    flatType: 'FULL' | 'HALF_RIGHT' | 'HALF_LEFT',
-    parentReferenceNum?: string
+    position: number
 ): Promise<string> {
-    if (flatType !== 'FULL' && parentReferenceNum) {
-        // For split flats, use parent reference with R or L suffix
-        const suffix = flatType === 'HALF_RIGHT' ? 'R' : 'L';
-        return `${parentReferenceNum}${suffix}`;
-    }
-
-    // Get building to find its sequence number
+    // Get building details
     const building = await prisma.building.findUnique({
         where: { id: buildingId },
-        select: { createdAt: true },
+        select: {
+            createdAt: true,
+        },
     });
 
     if (!building) {
         throw new Error('Building not found');
     }
 
-    // Count buildings created before this one to get building sequence
-    const buildingSeq =
-        (await prisma.building.count({
-            where: {
-                createdAt: { lte: building.createdAt },
-            },
-        })) || 1;
-
-    // Get existing flats on this floor in this building
-    const floorFlats = await prisma.flat.findMany({
+    // Calculate building sequence based on creation order (B1, B2, B3, etc.)
+    const buildingSeq = await prisma.building.count({
         where: {
-            buildingId,
-            floorNum,
-            flatType: 'FULL',
-            parentFlatId: null,
+            createdAt: { lte: building.createdAt },
         },
-        orderBy: {
-            referenceNum: 'desc',
-        },
-        take: 1,
-    });
+    }) || 1;
 
-    let sequence = 1;
-    if (floorFlats.length > 0) {
-        const lastRef = floorFlats[0].referenceNum;
-        // Extract sequence from B1-F2-003 format
-        const match = lastRef.match(/B\d+-F\d+-(\d+)/);
-        if (match) {
-            sequence = parseInt(match[1], 10) + 1;
-        }
-    }
-
-    return `B${buildingSeq}-F${floorNum}-${sequence.toString().padStart(3, '0')}`;
+    // Format: B6-F1-2, B17-F3-4, etc.
+    return `B${buildingSeq}-F${floorNum}-${position}`;
 }
 
 /**

@@ -268,9 +268,7 @@ function NewPurchaseForm() {
                                                                 <div className="flex flex-col items-center justify-center h-full min-h-[80px]">
                                                                     <p className="text-xs opacity-75 mb-1">{flat.referenceNum}</p>
                                                                     <p className="text-3xl mb-1">
-                                                                        {flat.propertyType === 'COMMERCIAL_STORE' ? '🏪' :
-                                                                            (flat.flatType === 'FULL' ? '🏠' :
-                                                                                flat.flatType === 'HALF_RIGHT' ? '◀️' : '▶️')}
+                                                                        {flat.propertyType === 'COMMERCIAL_STORE' ? '🏪' : '🏠'}
                                                                     </p>
                                                                     <p className="text-xs opacity-90 mb-1">
                                                                         {flat.propertyType === 'COMMERCIAL_STORE' ? 'محل تجاري' : 'شقة'}

@@ -18,13 +18,22 @@ export async function GET(request: Request) {
         const search = searchParams.get('search') || '';
         const status = searchParams.get('status') || '';
 
-        // Build where clause
-        const where: any = { deletedAt: undefined };
+        // Build where clause - only show active purchases
+        const where: any = {
+            OR: [
+                { deletedAt: { isSet: false } },
+                { deletedAt: null }
+            ]
+        };
 
         if (search) {
-            where.OR = [
-                { client: { fullName: { contains: search, mode: 'insensitive' } } },
-                { flat: { referenceNum: { contains: search, mode: 'insensitive' } } },
+            where.AND = [
+                {
+                    OR: [
+                        { client: { fullName: { contains: search, mode: 'insensitive' } } },
+                        { flat: { referenceNum: { contains: search, mode: 'insensitive' } } },
+                    ]
+                }
             ];
         }
 

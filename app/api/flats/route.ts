@@ -71,26 +71,31 @@ export async function POST(request: Request) {
         const body = await request.json();
         const validated = flatSchema.parse(body);
 
-        // Generate reference number with building
+        // NOTE: This endpoint is deprecated. Use /api/flats/bulk-create instead.
+        // Defaulting to position 1 for backwards compatibility
         const referenceNum = await generateFlatReference(
             validated.buildingId,
             validated.floorNum,
-            validated.flatType
+            1 // Default position
         );
 
         const flat = await prisma.flat.create({
             data: {
                 ...validated,
                 referenceNum,
+                flatPosition: 1,
             },
         });
 
-        return NextResponse.json(flat, { status: 201 });
+        return NextResponse.json(flat);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.errors }, { status: 400 });
         }
-        console.error('Error creating flat:', error);
-        return NextResponse.json({ error: 'فشل في إنشاء الشقة' }, { status: 500 });
+        console.error('[FLATS_POST]', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
     }
 }

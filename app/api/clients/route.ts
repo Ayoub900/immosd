@@ -19,14 +19,23 @@ export async function GET(request: Request) {
         const limit = parseInt(searchParams.get('limit') || '20');
         const search = searchParams.get('search') || '';
 
-        // Build where clause
-        const where: any = { deletedAt: undefined };
+        // Build where clause - only show active clients (not deleted)
+        const where: any = {
+            OR: [
+                { deletedAt: { isSet: false } },
+                { deletedAt: null }
+            ]
+        };
 
         if (search) {
-            where.OR = [
-                { fullName: { contains: search, mode: 'insensitive' } },
-                { phone: { contains: search } },
-                { cin: { contains: search, mode: 'insensitive' } },
+            where.AND = [
+                {
+                    OR: [
+                        { fullName: { contains: search, mode: 'insensitive' } },
+                        { phone: { contains: search } },
+                        { cin: { contains: search, mode: 'insensitive' } },
+                    ]
+                }
             ];
         }
 

@@ -355,7 +355,7 @@ export default function HomePage() {
               <h3 className="text-xl font-bold mb-4">اتصل بنا</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>📧 immobiliercharkaoui@gmail.com</li>
-                <li>📞 +212 XXX XXX XXX</li>
+                <li>📞 +212 661-482166</li>
                 <li>📍 المغرب</li>
               </ul>
             </div>

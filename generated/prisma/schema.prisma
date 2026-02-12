@@ -52,6 +52,7 @@ model Flat {
   buildingId   String       @db.ObjectId
   floorNum     Int
   flatType     FlatType
+  flatPosition Int? // Position 1-4 on the floor (nullable for backwards compatibility)
   propertyType PropertyType @default(APARTMENT)
   status       FlatStatus
 

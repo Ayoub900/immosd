@@ -147,6 +147,7 @@ exports.Prisma.FlatScalarFieldEnum = {
   buildingId: 'buildingId',
   floorNum: 'floorNum',
   flatType: 'flatType',
+  flatPosition: 'flatPosition',
   propertyType: 'propertyType',
   status: 'status',
   parentFlatId: 'parentFlatId',

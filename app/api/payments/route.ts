@@ -22,7 +22,12 @@ export async function GET(request: Request) {
         const amountMax = searchParams.get('amountMax') ? parseFloat(searchParams.get('amountMax')!) : undefined;
 
         // Build where clause for filtering (date and amount only - search is done in memory)
-        const where: any = {};
+        const where: any = {
+            OR: [
+                { deletedAt: { isSet: false } },
+                { deletedAt: null }
+            ]
+        };
 
         // Date range filter
         if (dateFrom || dateTo) {

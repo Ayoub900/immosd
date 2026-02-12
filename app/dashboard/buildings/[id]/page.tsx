@@ -47,7 +47,9 @@ export default function BuildingDetailPage() {
     const [editing, setEditing] = useState(false);
     const [editForm, setEditForm] = useState({ name: '', address: '', plotNumber: '', area: '', projectLocation: '', totalFloors: 1 });
     const [showPropertyTypeDialog, setShowPropertyTypeDialog] = useState(false);
+    const [showBulkCreateDialog, setShowBulkCreateDialog] = useState(false);
     const [pendingFloorNum, setPendingFloorNum] = useState<number | null>(null);
+    const [bulkFlatCount, setBulkFlatCount] = useState<1 | 2 | 3 | 4>(1);
     const [selectedPropertyType, setSelectedPropertyType] = useState<'APARTMENT' | 'COMMERCIAL_STORE'>('APARTMENT');
 
     useEffect(() => {
@@ -157,39 +159,59 @@ export default function BuildingDetailPage() {
         }
     }
 
-    async function handleSplit(flatId: string, flatRef: string) {
-        if (!confirm(`هل تريد تقسيم الشقة ${flatRef} إلى نصفين؟`)) return;
+    function openBulkCreateDialog(floorNum: number) {
+        setPendingFloorNum(floorNum);
+        setBulkFlatCount(1);
+        setSelectedPropertyType('APARTMENT');
+        setShowBulkCreateDialog(true);
+    }
+
+    async function handleBulkCreateFlats() {
+        if (pendingFloorNum === null) return;
 
         try {
-            const res = await fetch(`/api/flats/${flatId}/split`, {
+            const res = await fetch('/api/flats/bulk-create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({}),
+                body: JSON.stringify({
+                    buildingId: params.id,
+                    floorNum: pendingFloorNum,
+                    count: bulkFlatCount,
+                    propertyType: selectedPropertyType,
+                }),
             });
+
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data.error || 'فشل في تقسيم الشقة');
+                throw new Error(data.error || 'فشل في إنشاء الشقق');
             }
+
             await fetchBuilding();
+            setShowBulkCreateDialog(false);
+            setPendingFloorNum(null);
+            alert(`تم إنشاء ${bulkFlatCount} شقة/شقق بنجاح`);
         } catch (error: any) {
-            alert(error.message || 'فشل في تقسيم الشقة');
+            alert(error.message || 'فشل في إنشاء الشقق');
         }
     }
 
-    async function handleMerge(flatId: string, flatRef: string) {
-        if (!confirm(`هل تريد دمج الشقة ${flatRef} مع النصف الآخر؟`)) return;
+    async function handleDeleteFlat(flatId: string, flatRef: string) {
+        if (!confirm(`هل أنت متأكد من حذف الشقة ${flatRef}؟`)) return;
 
         try {
-            const res = await fetch(`/api/flats/${flatId}/merge`, {
-                method: 'POST',
+            const res = await fetch(`/api/flats/${flatId}`, {
+                method: 'DELETE',
             });
+
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data.error || 'فشل في دمج الشقة');
+                throw new Error(data.error || 'فشل في حذف الشقة');
             }
+
             await fetchBuilding();
+            alert(`تم حذف الشقة ${flatRef} بنجاح`);
         } catch (error: any) {
-            alert(error.message || 'فشل في دمج الشقة');
+            alert(error.message || 'فشل في حذف الشقة');
         }
     }
 
@@ -213,7 +235,7 @@ export default function BuildingDetailPage() {
 
     function getFloorDisplayName(floorNum: number): string {
         if (floorNum === 1) {
-            return 'الطابق الألرضي';
+            return 'الطابق الأرضي';
         }
         return `الطابق ${floorNum - 1}`;
     }
@@ -378,11 +400,11 @@ export default function BuildingDetailPage() {
                             <Building2 className="mx-auto text-gray-300 mb-4" size={64} />
                             <p className="text-gray-600 mb-4">لا توجد طوابق في هذا المبنى</p>
                             <button
-                                onClick={() => openPropertyTypeDialog(1)}
+                                onClick={() => openBulkCreateDialog(1)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg inline-flex items-center gap-2"
                             >
                                 <Plus size={20} />
-                                إضافة الطابق الأول
+                                إضافة شقق للطابق الأول (1-4)
                             </button>
                         </div>
                     ) : (
@@ -392,12 +414,12 @@ export default function BuildingDetailPage() {
                                 <button
                                     onClick={() => {
                                         const maxFloor = Math.max(...building.floors.map(f => f.floorNum));
-                                        openPropertyTypeDialog(maxFloor + 1);
+                                        openBulkCreateDialog(maxFloor + 1);
                                     }}
                                     className="w-full border-2 border-dashed border-blue-400 bg-blue-50 rounded-lg p-3 hover:border-blue-600 hover:bg-blue-100 transition-all group"
                                 >
                                     <Plus className="mx-auto mb-1 text-blue-600 group-hover:scale-110 transition-transform" size={20} />
-                                    <span className="text-sm text-blue-700 font-medium">إضافة طابق جديد</span>
+                                    <span className="text-sm text-blue-700 font-medium">إضافة شقق للطابق الجديد (1-4)</span>
                                 </button>
                             </div>
 
@@ -410,7 +432,18 @@ export default function BuildingDetailPage() {
                                             {/* Floor Label */}
                                             <div className="bg-gray-800 text-white px-4 py-2 flex justify-between items-center">
                                                 <span className="text-sm font-bold">{getFloorDisplayName(floor.floorNum)}</span>
-                                                <span className="text-xs opacity-75">{floor.flats.length} شقة</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs opacity-75">{floor.flats.length} شقة</span>
+                                                    {floor.flats.length < 4 && (
+                                                        <button
+                                                            onClick={() => openBulkCreateDialog(floor.floorNum)}
+                                                            className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                                            title="إضافة شقق إضافية"
+                                                        >
+                                                            <Plus size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
 
                                             {/* Flats Row - Touch each other */}
@@ -430,9 +463,7 @@ export default function BuildingDetailPage() {
                                                             <div className="flex flex-col items-center justify-center h-full min-h-[80px]">
                                                                 <p className="text-xs opacity-75 mb-1">{flat.referenceNum}</p>
                                                                 <p className="text-3xl mb-1">
-                                                                    {flat.propertyType === 'COMMERCIAL_STORE' ? '🏪' :
-                                                                        (flat.flatType === 'FULL' ? '🏠' :
-                                                                            flat.flatType === 'HALF_RIGHT' ? '◀️' : '▶️')}
+                                                                    {flat.propertyType === 'COMMERCIAL_STORE' ? '🏪' : '🏠'}
                                                                 </p>
                                                                 <p className="text-xs opacity-90 mb-1">
                                                                     {flat.propertyType === 'COMMERCIAL_STORE' ? 'محل تجاري' : 'شقة'}
@@ -459,31 +490,17 @@ export default function BuildingDetailPage() {
                                                                         {flat.propertyType === 'APARTMENT' ? '🏪' : '🏠'}
                                                                     </button>
 
-                                                                    {flat.flatType === 'FULL' && (
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.preventDefault();
-                                                                                handleSplit(flat.id, flat.referenceNum);
-                                                                            }}
-                                                                            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:scale-105 transition-transform flex items-center gap-1"
-                                                                            title="تقسيم إلى نصفين"
-                                                                        >
-                                                                            ✂️ تقسيم
-                                                                        </button>
-                                                                    )}
-
-                                                                    {(flat.flatType === 'HALF_RIGHT' || flat.flatType === 'HALF_LEFT') && (
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.preventDefault();
-                                                                                handleMerge(flat.id, flat.referenceNum);
-                                                                            }}
-                                                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:scale-105 transition-transform flex items-center gap-1"
-                                                                            title="دمج مع النصف الآخر"
-                                                                        >
-                                                                            🔗 دمج
-                                                                        </button>
-                                                                    )}
+                                                                    {/* Delete Button */}
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.preventDefault();
+                                                                            handleDeleteFlat(flat.id, flat.referenceNum);
+                                                                        }}
+                                                                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:scale-105 transition-transform flex items-center gap-1"
+                                                                        title="حذف الشقة"
+                                                                    >
+                                                                        <Trash2 size={16} /> حذف
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -585,6 +602,99 @@ export default function BuildingDetailPage() {
                             <button
                                 onClick={() => {
                                     setShowPropertyTypeDialog(false);
+                                    setPendingFloorNum(null);
+                                }}
+                                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium"
+                            >
+                                إلغاء
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Bulk Create Dialog */}
+            {showBulkCreateDialog && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">إضافة شقق للطابق</h3>
+                        <p className="text-sm text-gray-600 mb-6">الطابق رقم {pendingFloorNum}</p>
+
+                        {/* Number of Flats */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                عدد الشقق (1-4)
+                            </label>
+                            <div className="grid grid-cols-4 gap-2">
+                                {([1, 2, 3, 4] as const).map(count => (
+                                    <button
+                                        key={count}
+                                        onClick={() => setBulkFlatCount(count)}
+                                        className={`p-3 rounded-lg border-2 transition-all ${bulkFlatCount === count
+                                            ? 'border-blue-600 bg-blue-50 text-blue-700 font-bold'
+                                            : 'border-gray-300 hover:border-blue-400'
+                                            }`}
+                                    >
+                                        {count}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Property Type */}
+                        <div className="space-y-3 mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                نوع العقار
+                            </label>
+                            <button
+                                onClick={() => setSelectedPropertyType('APARTMENT')}
+                                className={`w-full p-4 rounded-lg border-2 transition-all ${selectedPropertyType === 'APARTMENT'
+                                    ? 'border-blue-600 bg-blue-50'
+                                    : 'border-gray-300 hover:border-blue-400'
+                                    }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <span className="text-3xl">🏠</span>
+                                    <div className="text-right flex-1">
+                                        <p className="font-bold text-gray-900">شقة</p>
+                                        <p className="text-sm text-gray-600">Apartment</p>
+                                    </div>
+                                    {selectedPropertyType === 'APARTMENT' && (
+                                        <span className="text-blue-600 text-xl">✓</span>
+                                    )}
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={() => setSelectedPropertyType('COMMERCIAL_STORE')}
+                                className={`w-full p-4 rounded-lg border-2 transition-all ${selectedPropertyType === 'COMMERCIAL_STORE'
+                                    ? 'border-blue-600 bg-blue-50'
+                                    : 'border-gray-300 hover:border-blue-400'
+                                    }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <span className="text-3xl">🏪</span>
+                                    <div className="text-right flex-1">
+                                        <p className="font-bold text-gray-900">محل تجاري</p>
+                                        <p className="text-sm text-gray-600">Commercial Store</p>
+                                    </div>
+                                    {selectedPropertyType === 'COMMERCIAL_STORE' && (
+                                        <span className="text-blue-600 text-xl">✓</span>
+                                    )}
+                                </div>
+                            </button>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={handleBulkCreateFlats}
+                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+                            >
+                                إضافة {bulkFlatCount} شقة/شقق
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowBulkCreateDialog(false);
                                     setPendingFloorNum(null);
                                 }}
                                 className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium"

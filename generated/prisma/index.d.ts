@@ -4111,10 +4111,12 @@ export namespace Prisma {
 
   export type FlatAvgAggregateOutputType = {
     floorNum: number | null
+    flatPosition: number | null
   }
 
   export type FlatSumAggregateOutputType = {
     floorNum: number | null
+    flatPosition: number | null
   }
 
   export type FlatMinAggregateOutputType = {
@@ -4123,6 +4125,7 @@ export namespace Prisma {
     buildingId: string | null
     floorNum: number | null
     flatType: $Enums.FlatType | null
+    flatPosition: number | null
     propertyType: $Enums.PropertyType | null
     status: $Enums.FlatStatus | null
     parentFlatId: string | null
@@ -4137,6 +4140,7 @@ export namespace Prisma {
     buildingId: string | null
     floorNum: number | null
     flatType: $Enums.FlatType | null
+    flatPosition: number | null
     propertyType: $Enums.PropertyType | null
     status: $Enums.FlatStatus | null
     parentFlatId: string | null
@@ -4151,6 +4155,7 @@ export namespace Prisma {
     buildingId: number
     floorNum: number
     flatType: number
+    flatPosition: number
     propertyType: number
     status: number
     parentFlatId: number
@@ -4163,10 +4168,12 @@ export namespace Prisma {
 
   export type FlatAvgAggregateInputType = {
     floorNum?: true
+    flatPosition?: true
   }
 
   export type FlatSumAggregateInputType = {
     floorNum?: true
+    flatPosition?: true
   }
 
   export type FlatMinAggregateInputType = {
@@ -4175,6 +4182,7 @@ export namespace Prisma {
     buildingId?: true
     floorNum?: true
     flatType?: true
+    flatPosition?: true
     propertyType?: true
     status?: true
     parentFlatId?: true
@@ -4189,6 +4197,7 @@ export namespace Prisma {
     buildingId?: true
     floorNum?: true
     flatType?: true
+    flatPosition?: true
     propertyType?: true
     status?: true
     parentFlatId?: true
@@ -4203,6 +4212,7 @@ export namespace Prisma {
     buildingId?: true
     floorNum?: true
     flatType?: true
+    flatPosition?: true
     propertyType?: true
     status?: true
     parentFlatId?: true
@@ -4304,6 +4314,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition: number | null
     propertyType: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId: string | null
@@ -4337,6 +4348,7 @@ export namespace Prisma {
     buildingId?: boolean
     floorNum?: boolean
     flatType?: boolean
+    flatPosition?: boolean
     propertyType?: boolean
     status?: boolean
     parentFlatId?: boolean
@@ -4359,6 +4371,7 @@ export namespace Prisma {
     buildingId?: boolean
     floorNum?: boolean
     flatType?: boolean
+    flatPosition?: boolean
     propertyType?: boolean
     status?: boolean
     parentFlatId?: boolean
@@ -4367,7 +4380,7 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type FlatOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referenceNum" | "buildingId" | "floorNum" | "flatType" | "propertyType" | "status" | "parentFlatId" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["flat"]>
+  export type FlatOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referenceNum" | "buildingId" | "floorNum" | "flatType" | "flatPosition" | "propertyType" | "status" | "parentFlatId" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["flat"]>
   export type FlatInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     building?: boolean | BuildingDefaultArgs<ExtArgs>
     parentFlat?: boolean | Flat$parentFlatArgs<ExtArgs>
@@ -4392,6 +4405,7 @@ export namespace Prisma {
       buildingId: string
       floorNum: number
       flatType: $Enums.FlatType
+      flatPosition: number | null
       propertyType: $Enums.PropertyType
       status: $Enums.FlatStatus
       parentFlatId: string | null
@@ -4800,6 +4814,7 @@ export namespace Prisma {
     readonly buildingId: FieldRef<"Flat", 'String'>
     readonly floorNum: FieldRef<"Flat", 'Int'>
     readonly flatType: FieldRef<"Flat", 'FlatType'>
+    readonly flatPosition: FieldRef<"Flat", 'Int'>
     readonly propertyType: FieldRef<"Flat", 'PropertyType'>
     readonly status: FieldRef<"Flat", 'FlatStatus'>
     readonly parentFlatId: FieldRef<"Flat", 'String'>
@@ -12716,6 +12731,7 @@ export namespace Prisma {
     buildingId: 'buildingId',
     floorNum: 'floorNum',
     flatType: 'flatType',
+    flatPosition: 'flatPosition',
     propertyType: 'propertyType',
     status: 'status',
     parentFlatId: 'parentFlatId',
@@ -13194,6 +13210,7 @@ export namespace Prisma {
     buildingId?: StringFilter<"Flat"> | string
     floorNum?: IntFilter<"Flat"> | number
     flatType?: EnumFlatTypeFilter<"Flat"> | $Enums.FlatType
+    flatPosition?: IntNullableFilter<"Flat"> | number | null
     propertyType?: EnumPropertyTypeFilter<"Flat"> | $Enums.PropertyType
     status?: EnumFlatStatusFilter<"Flat"> | $Enums.FlatStatus
     parentFlatId?: StringNullableFilter<"Flat"> | string | null
@@ -13213,6 +13230,7 @@ export namespace Prisma {
     buildingId?: SortOrder
     floorNum?: SortOrder
     flatType?: SortOrder
+    flatPosition?: SortOrder
     propertyType?: SortOrder
     status?: SortOrder
     parentFlatId?: SortOrder
@@ -13235,6 +13253,7 @@ export namespace Prisma {
     buildingId?: StringFilter<"Flat"> | string
     floorNum?: IntFilter<"Flat"> | number
     flatType?: EnumFlatTypeFilter<"Flat"> | $Enums.FlatType
+    flatPosition?: IntNullableFilter<"Flat"> | number | null
     propertyType?: EnumPropertyTypeFilter<"Flat"> | $Enums.PropertyType
     status?: EnumFlatStatusFilter<"Flat"> | $Enums.FlatStatus
     parentFlatId?: StringNullableFilter<"Flat"> | string | null
@@ -13254,6 +13273,7 @@ export namespace Prisma {
     buildingId?: SortOrder
     floorNum?: SortOrder
     flatType?: SortOrder
+    flatPosition?: SortOrder
     propertyType?: SortOrder
     status?: SortOrder
     parentFlatId?: SortOrder
@@ -13276,6 +13296,7 @@ export namespace Prisma {
     buildingId?: StringWithAggregatesFilter<"Flat"> | string
     floorNum?: IntWithAggregatesFilter<"Flat"> | number
     flatType?: EnumFlatTypeWithAggregatesFilter<"Flat"> | $Enums.FlatType
+    flatPosition?: IntNullableWithAggregatesFilter<"Flat"> | number | null
     propertyType?: EnumPropertyTypeWithAggregatesFilter<"Flat"> | $Enums.PropertyType
     status?: EnumFlatStatusWithAggregatesFilter<"Flat"> | $Enums.FlatStatus
     parentFlatId?: StringNullableWithAggregatesFilter<"Flat"> | string | null
@@ -14048,6 +14069,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -14066,6 +14088,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -14081,6 +14104,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14098,6 +14122,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14115,6 +14140,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -14127,6 +14153,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14139,6 +14166,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15051,6 +15079,18 @@ export namespace Prisma {
     not?: NestedEnumFlatTypeFilter<$PrismaModel> | $Enums.FlatType
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+    isSet?: boolean
+  }
+
   export type EnumPropertyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.PropertyType | EnumPropertyTypeFieldRefInput<$PrismaModel>
     in?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
@@ -15086,6 +15126,7 @@ export namespace Prisma {
     buildingId?: SortOrder
     floorNum?: SortOrder
     flatType?: SortOrder
+    flatPosition?: SortOrder
     propertyType?: SortOrder
     status?: SortOrder
     parentFlatId?: SortOrder
@@ -15096,6 +15137,7 @@ export namespace Prisma {
 
   export type FlatAvgOrderByAggregateInput = {
     floorNum?: SortOrder
+    flatPosition?: SortOrder
   }
 
   export type FlatMaxOrderByAggregateInput = {
@@ -15104,6 +15146,7 @@ export namespace Prisma {
     buildingId?: SortOrder
     floorNum?: SortOrder
     flatType?: SortOrder
+    flatPosition?: SortOrder
     propertyType?: SortOrder
     status?: SortOrder
     parentFlatId?: SortOrder
@@ -15118,6 +15161,7 @@ export namespace Prisma {
     buildingId?: SortOrder
     floorNum?: SortOrder
     flatType?: SortOrder
+    flatPosition?: SortOrder
     propertyType?: SortOrder
     status?: SortOrder
     parentFlatId?: SortOrder
@@ -15128,6 +15172,7 @@ export namespace Prisma {
 
   export type FlatSumOrderByAggregateInput = {
     floorNum?: SortOrder
+    flatPosition?: SortOrder
   }
 
   export type EnumFlatTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -15138,6 +15183,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFlatTypeFilter<$PrismaModel>
     _max?: NestedEnumFlatTypeFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+    isSet?: boolean
   }
 
   export type EnumPropertyTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -15842,6 +15904,15 @@ export namespace Prisma {
     set?: $Enums.FlatType
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+    unset?: boolean
+  }
+
   export type EnumPropertyTypeFieldUpdateOperationsInput = {
     set?: $Enums.PropertyType
   }
@@ -16422,6 +16493,23 @@ export namespace Prisma {
     _max?: NestedEnumFlatTypeFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
   export type NestedEnumPropertyTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PropertyType | EnumPropertyTypeFieldRefInput<$PrismaModel>
     in?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
@@ -16539,6 +16627,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -16555,6 +16644,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -16635,6 +16725,7 @@ export namespace Prisma {
     buildingId?: StringFilter<"Flat"> | string
     floorNum?: IntFilter<"Flat"> | number
     flatType?: EnumFlatTypeFilter<"Flat"> | $Enums.FlatType
+    flatPosition?: IntNullableFilter<"Flat"> | number | null
     propertyType?: EnumPropertyTypeFilter<"Flat"> | $Enums.PropertyType
     status?: EnumFlatStatusFilter<"Flat"> | $Enums.FlatStatus
     parentFlatId?: StringNullableFilter<"Flat"> | string | null
@@ -16775,6 +16866,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -16792,6 +16884,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -16812,6 +16905,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -16829,6 +16923,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -16962,6 +17057,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16978,6 +17074,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17089,6 +17186,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -17106,6 +17204,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -17204,6 +17303,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17220,6 +17320,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17357,6 +17458,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -17374,6 +17476,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -17441,6 +17544,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17457,6 +17561,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17715,6 +17820,7 @@ export namespace Prisma {
     referenceNum: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     parentFlatId?: string | null
@@ -17740,6 +17846,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17755,6 +17862,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17770,6 +17878,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     parentFlatId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17859,6 +17968,7 @@ export namespace Prisma {
     buildingId: string
     floorNum: number
     flatType: $Enums.FlatType
+    flatPosition?: number | null
     propertyType?: $Enums.PropertyType
     status: $Enums.FlatStatus
     createdAt?: Date | string
@@ -17883,6 +17993,7 @@ export namespace Prisma {
     referenceNum?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17899,6 +18010,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17914,6 +18026,7 @@ export namespace Prisma {
     buildingId?: StringFieldUpdateOperationsInput | string
     floorNum?: IntFieldUpdateOperationsInput | number
     flatType?: EnumFlatTypeFieldUpdateOperationsInput | $Enums.FlatType
+    flatPosition?: NullableIntFieldUpdateOperationsInput | number | null
     propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
     status?: EnumFlatStatusFieldUpdateOperationsInput | $Enums.FlatStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

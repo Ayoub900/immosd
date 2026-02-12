@@ -109,9 +109,14 @@ export async function DELETE(
             );
         }
 
+        const now = new Date();
         await prisma.flat.update({
             where: { id },
-            data: { deletedAt: new Date() },
+            data: {
+                deletedAt: now,
+                // Append timestamp to free up the reference number for reuse
+                referenceNum: `${flat.referenceNum}_DELETED_${now.getTime()}`,
+            },
         });
 
         return NextResponse.json({ success: true });

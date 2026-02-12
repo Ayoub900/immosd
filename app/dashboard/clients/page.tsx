@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Users, Plus, Phone, MapPin, FileText, Search } from 'lucide-react';
+import { Users, Plus, Phone, MapPin, FileText, Search, Trash2 } from 'lucide-react';
 import DashboardNav from '@/components/DashboardNav';
 import PaginationComponent from '@/components/PaginationComponent';
 
@@ -62,6 +62,33 @@ export default function ClientsPage() {
         setSearching(true);
         setPagination(prev => ({ ...prev, page: 1 }));
         fetchClients();
+    }
+
+    async function handleDeleteClient(clientId: string, clientName: string, event: React.MouseEvent) {
+        event.preventDefault(); // Prevent navigation to client detail page
+        event.stopPropagation();
+
+        if (!confirm(`هل أنت متأكد من حذف العميل "${clientName}"؟\n\nسيتم أيضاً حذف جميع المشتريات والدفعات المرتبطة به.`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/clients/${clientId}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                alert(data.error || 'فشل في حذف العميل');
+                return;
+            }
+
+            // Refresh the list
+            fetchClients();
+        } catch (error) {
+            console.error('Error deleting client:', error);
+            alert('فشل في حذف العميل');
+        }
     }
 
     const clientsWithPurchases = clients.filter(c => c.purchases.length > 0).length;
@@ -203,17 +230,26 @@ export default function ClientsPage() {
                                 <Link
                                     key={client.id}
                                     href={`/dashboard/clients/${client.id}`}
-                                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all"
+                                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all relative group"
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="bg-blue-100 p-3 rounded-lg">
                                             <Users className="text-blue-600" size={24} />
                                         </div>
-                                        {client.purchases.length > 0 && (
-                                            <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                                                {client.purchases.length} مشتريات
-                                            </span>
-                                        )}
+                                        <div className="flex items-center gap-2">
+                                            {client.purchases.length > 0 && (
+                                                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                                                    {client.purchases.length} مشتريات
+                                                </span>
+                                            )}
+                                            <button
+                                                onClick={(e) => handleDeleteClient(client.id, client.fullName, e)}
+                                                className=" transition-opacity bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
+                                                title="حذف العميل"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <h3 className="text-xl font-bold text-gray-900 mb-2">
