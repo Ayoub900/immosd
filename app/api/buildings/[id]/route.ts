@@ -16,6 +16,9 @@ export async function GET(
                 flats: {
                     include: {
                         purchase: {
+                            where: {
+                                OR: [{ deletedAt: { isSet: false } }, { deletedAt: null }],
+                            },
                             include: {
                                 client: true,
                             },
