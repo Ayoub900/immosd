@@ -14,6 +14,14 @@ interface Flat {
     propertyType: 'APARTMENT' | 'COMMERCIAL_STORE';
     status: 'AVAILABLE' | 'RESERVED' | 'SOLD';
     parentFlatId?: string;
+    purchase?: {
+        client: {
+            id: string;
+            fullName: string;
+            phone: string;
+            cin?: string;
+        };
+    };
 }
 
 interface Floor {
@@ -458,7 +466,7 @@ export default function BuildingDetailPage() {
                                                                 hover:brightness-110 transition-all
                                                                 ${idx !== 0 ? 'border-l border-white/30' : ''}
                                                             `}
-                                                            title={`${flat.referenceNum} - ${getStatusText(flat.status)}`}
+                                                            title={`${flat.referenceNum} - ${getStatusText(flat.status)}${flat.purchase?.client ? ` - ${flat.purchase.client.fullName}` : ''}`}
                                                         >
                                                             <div className="flex flex-col items-center justify-center h-full min-h-[80px]">
                                                                 <p className="text-xs opacity-75 mb-1">{flat.referenceNum}</p>
@@ -471,6 +479,11 @@ export default function BuildingDetailPage() {
                                                                 <p className="text-xs font-bold uppercase tracking-wide">
                                                                     {getStatusText(flat.status)}
                                                                 </p>
+                                                                {flat.purchase?.client && (
+                                                                    <p className="text-xs font-semibold mt-1 bg-white/20 px-2 py-0.5 rounded">
+                                                                        {flat.purchase.client.fullName}
+                                                                    </p>
+                                                                )}
                                                             </div>
                                                         </div>
 

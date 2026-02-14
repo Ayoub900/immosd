@@ -14,6 +14,13 @@ export async function GET(
             where: { id },
             include: {
                 flats: {
+                    include: {
+                        purchase: {
+                            include: {
+                                client: true,
+                            },
+                        },
+                    },
                     orderBy: [
                         { floorNum: 'asc' },
                         { referenceNum: 'asc' },
