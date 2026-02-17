@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FileText, Plus, Home, User, DollarSign, CheckCircle, Clock, Search, Filter } from 'lucide-react';
+import { FileText, Plus, Home, User, DollarSign, CheckCircle, Clock, Search, Filter, Trash2 } from 'lucide-react';
 import DashboardNav from '@/components/DashboardNav';
 import PaginationComponent from '@/components/PaginationComponent';
 
@@ -81,6 +81,33 @@ export default function PurchasesPage() {
         setSearching(true);
         setPagination(prev => ({ ...prev, page: 1 }));
         fetchPurchases();
+    }
+
+    async function handleDeletePurchase(purchaseId: string, clientName: string, flatRef: string, event: React.MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!confirm(`هل أنت متأكد من حذف عملية شراء العميل "${clientName}" للشقة "${flatRef}"؟\n\nسيتم أيضاً حذف جميع الدفعات المرتبطة بهذه العملية وإرجاع الشقة إلى حالة متاحة.`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/purchases/${purchaseId}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                alert(data.error || 'فشل في حذف عملية الشراء');
+                return;
+            }
+
+            // Refresh the list
+            fetchPurchases();
+        } catch (error) {
+            console.error('Error deleting purchase:', error);
+            alert('فشل في حذف عملية الشراء');
+        }
     }
 
     if (loading) {
@@ -243,7 +270,14 @@ export default function PurchasesPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="text-right">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={(e) => handleDeletePurchase(purchase.id, purchase.client.fullName, purchase.flat.referenceNum, e)}
+                                                    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors"
+                                                    title="حذف عملية الشراء"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                                 {summary?.isFullyPaid ? (
                                                     <CheckCircle className="text-green-500" size={24} />
                                                 ) : (
