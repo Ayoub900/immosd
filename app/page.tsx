@@ -362,6 +362,17 @@ export default function HomePage() {
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
             <p>© {new Date().getFullYear()} immobiliercharkaoui - جميع الحقوق محفوظة</p>
+            <p className="mt-2 text-sm" dir="ltr">
+              Conçu par{' '}
+              <a
+                href="https://www.sentinelstudio.ma/fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#1481c8] hover:text-white font-medium transition-colors"
+              >
+                Sentinel Studio
+              </a>
+            </p>
           </div>
         </div>
       </footer>

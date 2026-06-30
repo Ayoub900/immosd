@@ -110,6 +110,10 @@ model Payment {
   deletedAt DateTime?
 
   @@index([purchaseId])
+  // Index the default sort key. Payment documents are large (they embed a base64
+  // PDF in receiptUrl), so sorting by createdAt without an index forces MongoDB to
+  // do an in-memory sort that exceeds its 32MB limit (error 292).
+  @@index([createdAt])
   @@map("payments")
 }
 

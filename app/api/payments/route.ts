@@ -21,68 +21,103 @@ export async function GET(request: Request) {
         const amountMin = searchParams.get('amountMin') ? parseFloat(searchParams.get('amountMin')!) : undefined;
         const amountMax = searchParams.get('amountMax') ? parseFloat(searchParams.get('amountMax')!) : undefined;
 
-        // Build where clause for filtering (date and amount only - search is done in memory)
-        const where: any = {
-            OR: [
-                { deletedAt: { isSet: false } },
-                { deletedAt: null }
-            ]
-        };
+        // Build where clause for filtering. Everything (date, amount, search and
+        // pagination) is pushed down to the database so we never load the whole
+        // payments collection into memory — each row carries a large base64 PDF in
+        // `receiptUrl`, so fetching them all blows up memory once enough payments exist.
+        const and: any[] = [
+            {
+                OR: [
+                    { deletedAt: { isSet: false } },
+                    { deletedAt: null },
+                ],
+            },
+        ];
 
         // Date range filter
         if (dateFrom || dateTo) {
-            where.paymentDate = {};
-            if (dateFrom) where.paymentDate.gte = dateFrom;
-            if (dateTo) where.paymentDate.lte = dateTo;
+            const paymentDate: any = {};
+            if (dateFrom) paymentDate.gte = dateFrom;
+            if (dateTo) paymentDate.lte = dateTo;
+            and.push({ paymentDate });
         }
 
         // Amount range filter
         if (amountMin !== undefined || amountMax !== undefined) {
-            where.amount = {};
-            if (amountMin !== undefined) where.amount.gte = amountMin;
-            if (amountMax !== undefined) where.amount.lte = amountMax;
+            const amount: any = {};
+            if (amountMin !== undefined) amount.gte = amountMin;
+            if (amountMax !== undefined) amount.lte = amountMax;
+            and.push({ amount });
         }
 
-        // Get all matching payments (we'll filter by search terms in memory)
-        const allPayments = await prisma.payment.findMany({
-            where,
-            include: {
-                purchase: {
-                    include: {
-                        client: {
-                            select: {
-                                id: true,
-                                fullName: true,
-                            },
+        const where = { AND: and };
+
+        // Lightweight projection — exclude the heavy base64 `receiptUrl` so we never
+        // load the PDFs into memory (and the sort can use the createdAt index).
+        const select = {
+            id: true,
+            purchaseId: true,
+            amount: true,
+            paymentDate: true,
+            receiptNum: true,
+            createdAt: true,
+            purchase: {
+                select: {
+                    client: {
+                        select: {
+                            id: true,
+                            fullName: true,
                         },
-                        flat: {
-                            select: {
-                                id: true,
-                                referenceNum: true,
-                            },
+                    },
+                    flat: {
+                        select: {
+                            id: true,
+                            referenceNum: true,
                         },
                     },
                 },
             },
-            orderBy: { createdAt: 'desc' },
-        });
+        } as const;
 
-        // Filter by client name or flat reference in memory (for search functionality)
-        let filteredPayments = allPayments;
+        // Search spans related fields (client name / flat reference). Prisma's MongoDB
+        // connector can't reliably filter across these relations (it errors on rows
+        // whose relation is null), so when searching we fetch the scalar-filtered rows
+        // — without the heavy receiptUrl — and match/paginate in memory. Without a
+        // search term we paginate at the database level, which scales regardless of size.
         if (search) {
+            const matching = await prisma.payment.findMany({
+                where,
+                select,
+                orderBy: { createdAt: 'desc' },
+            });
+
             const searchLower = search.toLowerCase();
-            filteredPayments = allPayments.filter(payment =>
+            const filtered = matching.filter((payment) =>
                 payment.receiptNum.toLowerCase().includes(searchLower) ||
                 payment.purchase.client.fullName.toLowerCase().includes(searchLower) ||
                 payment.purchase.flat.referenceNum.toLowerCase().includes(searchLower)
             );
+
+            const total = filtered.length;
+            const startIndex = (page - 1) * limit;
+            const payments = filtered.slice(startIndex, startIndex + limit);
+
+            return NextResponse.json({
+                payments,
+                pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+            });
         }
 
-        // Pagination
-        const total = filteredPayments.length;
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
-        const payments = filteredPayments.slice(startIndex, endIndex);
+        const [total, payments] = await Promise.all([
+            prisma.payment.count({ where }),
+            prisma.payment.findMany({
+                where,
+                select,
+                orderBy: { createdAt: 'desc' },
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+        ]);
 
         return NextResponse.json({
             payments,

@@ -20,8 +20,13 @@ export async function calculatePaymentSummary(
 ): Promise<PaymentSummary | null> {
     const purchase = await prisma.purchase.findUnique({
         where: { id: purchaseId },
-        include: {
-            payments: {},
+        select: {
+            agreedPrice: true,
+            // Only the amount is needed for the summary — avoid pulling the heavy
+            // base64 `receiptUrl` stored on each payment.
+            payments: {
+                select: { amount: true },
+            },
         },
     });
 

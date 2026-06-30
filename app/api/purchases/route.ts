@@ -50,9 +50,9 @@ export async function GET(request: Request) {
             include: {
                 client: true,
                 flat: true,
-                payments: {
-                    where: {},
-                },
+                // NOTE: raw payments are intentionally NOT included here. Each payment
+                // carries a large base64 `receiptUrl`, and the list view only needs the
+                // aggregated `paymentSummary` computed below.
             },
             orderBy: { createdAt: 'desc' },
             skip: (page - 1) * limit,

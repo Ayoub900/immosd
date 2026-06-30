@@ -17,71 +17,105 @@ export async function GET(request: Request) {
         const buildingId = searchParams.get('buildingId') || '';
         const flatId = searchParams.get('flatId') || '';
 
-        // Build where clause for filtering
-        const where: any = {};
+        // Build where clause for filtering. All filtering, search and pagination is
+        // pushed down to the database so we never load the entire expenses collection
+        // into memory.
+        const and: any[] = [
+            {
+                OR: [
+                    { deletedAt: { isSet: false } },
+                    { deletedAt: null },
+                ],
+            },
+        ];
 
         // Category filter
         if (category) {
-            where.category = category;
+            and.push({ category });
         }
 
         // Date range filter
         if (dateFrom || dateTo) {
-            where.expenseDate = {};
-            if (dateFrom) where.expenseDate.gte = dateFrom;
-            if (dateTo) where.expenseDate.lte = dateTo;
+            const expenseDate: any = {};
+            if (dateFrom) expenseDate.gte = dateFrom;
+            if (dateTo) expenseDate.lte = dateTo;
+            and.push({ expenseDate });
         }
 
         // Amount range filter
         if (amountMin !== undefined || amountMax !== undefined) {
-            where.amount = {};
-            if (amountMin !== undefined) where.amount.gte = amountMin;
-            if (amountMax !== undefined) where.amount.lte = amountMax;
+            const amount: any = {};
+            if (amountMin !== undefined) amount.gte = amountMin;
+            if (amountMax !== undefined) amount.lte = amountMax;
+            and.push({ amount });
         }
 
         // Building filter
         if (buildingId) {
-            where.buildingId = buildingId;
+            and.push({ buildingId });
         }
 
-        // Get all matching expenses
-        const allExpenses = await prisma.expense.findMany({
-            where,
-            include: {
-                building: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                flat: {
-                    select: {
-                        id: true,
-                        referenceNum: true,
-                    },
+        // Flat filter
+        if (flatId) {
+            and.push({ flatId });
+        }
+
+        const where = { AND: and };
+
+        const include = {
+            building: {
+                select: {
+                    id: true,
+                    name: true,
                 },
             },
-            orderBy: { createdAt: 'desc' },
-        });
+            flat: {
+                select: {
+                    id: true,
+                    referenceNum: true,
+                },
+            },
+        } as const;
 
-        // Filter out deleted expenses (those with deletedAt set)
-        let filteredExpenses = allExpenses.filter(expense => !expense.deletedAt);
-
-        // Filter by search term in memory (description, building name, flat reference)
+        // Search spans related fields (building name / flat reference). Prisma's
+        // MongoDB connector can't reliably filter across these relations (it errors on
+        // rows whose relation is null), so when searching we fetch the scalar-filtered
+        // rows and match/paginate in memory. Without a search term we paginate at the
+        // database level.
         if (search) {
+            const matching = await prisma.expense.findMany({
+                where,
+                include,
+                orderBy: { createdAt: 'desc' },
+            });
+
             const searchLower = search.toLowerCase();
-            filteredExpenses = filteredExpenses.filter(expense =>
+            const filtered = matching.filter((expense) =>
                 expense.description.toLowerCase().includes(searchLower) ||
                 expense.building?.name.toLowerCase().includes(searchLower) ||
                 expense.flat?.referenceNum.toLowerCase().includes(searchLower)
             );
+
+            const total = filtered.length;
+            const startIndex = (page - 1) * limit;
+            const expenses = filtered.slice(startIndex, startIndex + limit);
+
+            return NextResponse.json({
+                expenses,
+                pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+            });
         }
 
-        // Pagination
-        const total = filteredExpenses.length;
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
-        const expenses = filteredExpenses.slice(startIndex, endIndex);
+        const [total, expenses] = await Promise.all([
+            prisma.expense.count({ where }),
+            prisma.expense.findMany({
+                where,
+                include,
+                orderBy: { createdAt: 'desc' },
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+        ]);
 
         return NextResponse.json({
             expenses,

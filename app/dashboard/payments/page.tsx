@@ -237,7 +237,7 @@ export default function PaymentsPage() {
                 </div>
 
                 {/* Payments Table - Desktop */}
-                <div className="hidden md:block bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="hidden md:block bg-white rounded-lg shadow-sm overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>

@@ -38,6 +38,7 @@ export default function NewPaymentPage() {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 20, total: 0, totalPages: 0 });
     const [loading, setLoading] = useState(true);
+    const [initialLoading, setInitialLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -58,17 +59,13 @@ export default function NewPaymentPage() {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // Reset purchases when search changes
+    // Reset purchases and reload whenever the (debounced) search changes. This also
+    // covers the initial load, since debouncedSearch starts as '' and runs on mount.
     useEffect(() => {
         setPurchases([]);
         setPagination({ page: 1, limit: 20, total: 0, totalPages: 0 });
         fetchPurchases(1, true);
     }, [debouncedSearch]);
-
-    // Initial load
-    useEffect(() => {
-        fetchPurchases(1, true);
-    }, []);
 
     // Infinite scroll observer
     useEffect(() => {
@@ -121,6 +118,7 @@ export default function NewPaymentPage() {
         } finally {
             setLoading(false);
             setLoadingMore(false);
+            setInitialLoading(false);
         }
     }
 
@@ -165,7 +163,7 @@ export default function NewPaymentPage() {
 
     const selectedPurchase = purchases.find(p => p.id === selectedPurchaseId);
 
-    if (loading) {
+    if (initialLoading) {
         return (
             <div className="min-h-screen bg-gray-50">
                 <DashboardNav currentPage="payments" />
@@ -220,7 +218,12 @@ export default function NewPaymentPage() {
 
                         {/* Purchase List with Infinite Scroll */}
                         <div className="border border-gray-200 rounded-lg max-h-[500px] overflow-y-auto">
-                            {purchases.length === 0 && !loading ? (
+                            {loading && purchases.length === 0 ? (
+                                <div className="p-8 text-center">
+                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+                                    <p className="text-sm text-gray-500 mt-2">جاري البحث...</p>
+                                </div>
+                            ) : purchases.length === 0 ? (
                                 <div className="p-8 text-center text-gray-500">
                                     {searchQuery ? 'لا توجد نتائج للبحث' : 'لا توجد عمليات شراء قيد التنفيذ'}
                                 </div>
